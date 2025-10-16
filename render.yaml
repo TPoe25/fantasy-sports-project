@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: fantasy-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: fantasy-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: fantasy-redis
+          type: redis
+      - key: SECRET_KEY
+        generateValue: true
+
+  - type: worker
+    name: fantasy-worker
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A celery_worker.celery worker --loglevel=info
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: fantasy-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: fantasy-redis
+          type: redis
+
+databases:
+  - name: fantasy-db
+
+services:
+  - type: redis
+    name: fantasy-redis
