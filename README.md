@@ -19,7 +19,7 @@ Taylor Poe
 - Deployed using Render with cloud-ready configuration
 
 ### Architecture Overview
-```mermaid
+```
 Client / Cron
      |
      v
